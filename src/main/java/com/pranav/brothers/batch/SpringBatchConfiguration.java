@@ -41,7 +41,7 @@ public class SpringBatchConfiguration {
 	private StepBuilderFactory stepBuilderFactory;
 
 	@Bean(name = "transformContacts")
-	public Job transformBookRecords(Step step1) throws IOException {
+	public Job transformContacts(Step step1) throws IOException {
 		return jobBuilderFactory.get("transformContacts").flow(step1).end().build();
 	}
 

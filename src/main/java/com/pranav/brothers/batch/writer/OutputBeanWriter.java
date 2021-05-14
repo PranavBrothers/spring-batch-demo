@@ -31,9 +31,9 @@ public class OutputBeanWriter implements ItemWriter<OutputBean> {
 	private String apiUrl;
 
 	@Override
-	public void write(List<? extends OutputBean> books) throws Exception {
-		log.info("JSON Data --> {}", objectMapper.writeValueAsString(books));
-		log.info("Response body {}", invokeHttpPost(books, apiUrl));
+	public void write(List<? extends OutputBean> outputBean) throws Exception {
+		log.info("JSON Data --> {}", objectMapper.writeValueAsString(outputBean));
+		log.info("Response body {}", invokeHttpPost(outputBean, apiUrl));
 	}
 	
 	private String invokeHttpPost(Object requestPayload, String endPointUrl) {
