@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
+import com.pranav.brothers.batch.listener.JobCompletionListener;
 import com.pranav.brothers.batch.processor.InputBeanProcessor;
 import com.pranav.brothers.batch.reader.InputBeanFieldSetMapper;
 import com.pranav.brothers.batch.writer.OutputBeanWriter;
@@ -42,7 +43,14 @@ public class SpringBatchConfiguration {
 
 	@Bean(name = "transformContacts")
 	public Job transformContacts(Step step1) throws IOException {
-		return jobBuilderFactory.get("transformContacts").flow(step1).end().build();
+		return jobBuilderFactory.get("transformContacts")
+				.flow(step1).end()
+				.listener(jobCompletionListener()).build();
+	}
+	
+	@Bean
+	public JobCompletionListener jobCompletionListener() {
+	    return new JobCompletionListener();
 	}
 
 	@Bean
