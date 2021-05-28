@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pranav.brothers.SpringBatchApplication;
 import com.pranav.brothers.beans.OutputBean;
 import com.pranav.brothers.service.BatchService;
 
@@ -19,6 +22,9 @@ public class BatchController {
 
 	@Autowired
 	private BatchService batchService;
+	
+	@Autowired
+    private SpringBatchApplication.PubsubOutboundGateway messagingGateway;
 	
 	@PostMapping("/start")
     public String startBatch(@RequestBody String filePath) throws Exception {
@@ -33,4 +39,11 @@ public class BatchController {
 		log.info("Batch Data Received. Size-->{}",outputBeans.size());
         return "Batch Data Received";
     }
+	
+	@PostMapping("/postMessage")
+    public ResponseEntity<?>  publishMessage(@RequestBody String message) {
+        messagingGateway.sendToPubsub(message);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+	
 }

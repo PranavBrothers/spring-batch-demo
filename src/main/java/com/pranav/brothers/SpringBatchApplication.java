@@ -10,14 +10,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.MessagingGateway;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pranav.brothers.service.BatchService;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class,
+		DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
 public class SpringBatchApplication implements CommandLineRunner {
 
 	@Autowired
@@ -45,6 +51,17 @@ public class SpringBatchApplication implements CommandLineRunner {
 	@Bean
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
+	}
+
+	@Bean
+	@ServiceActivator(inputChannel = "myOutputChannel")
+	public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
+		return new PubSubMessageHandler(pubsubTemplate, "myTopic");
+	}
+
+	@MessagingGateway(defaultRequestChannel = "myOutputChannel")
+	public interface PubsubOutboundGateway {
+		void sendToPubsub(String text);
 	}
 
 }
