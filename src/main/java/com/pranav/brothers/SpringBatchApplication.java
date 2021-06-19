@@ -63,5 +63,11 @@ public class SpringBatchApplication implements CommandLineRunner {
 	public interface PubsubOutboundGateway {
 		void sendToPubsub(String text);
 	}
+	
+	//https://www.programmersought.com/article/66396802369/
+	//https://dzone.com/articles/spring-boot-and-gcp-cloud-pubsub
+	//https://blog.joshsoftware.com/2020/05/12/spring-boot-microservices-communicating-through-gcp-pub-sub/
+	//https://cloud.google.com/pubsub/docs/spring
+
 
 }
